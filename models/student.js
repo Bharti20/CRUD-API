@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('../dbconnection/connection');
 const student_schema = mongoose.Schema({
     name: {
         type: String,
@@ -13,14 +13,14 @@ const student_schema = mongoose.Schema({
         ref: School
     },
     created: {
-        type: DateTime,
+        type: Date,
         required: true
     },
     updated: {
-        type: DateTime,
+        type: Date,
         required: true
     }
 });
-const user_model = new mongoose.model('User', user)
+const student_model = new mongoose.model('Student', student_schema);
 
-module.exports = user_model
+module.exports = student_model;

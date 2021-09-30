@@ -1,6 +1,11 @@
-const mongoose = require('mongoose')
+const mongoose = require('../dbconnection/connection')
+
 const user = mongoose.Schema({
-    name: {
+    first_name: {
+        type: String,
+        required: true
+    },
+    last_name: {
         type: String,
         required: true
     },
@@ -8,23 +13,26 @@ const user = mongoose.Schema({
         type: String,
         required: true
     },
+    mobile: {
+        type: Number,
+        required: true
+    },
     password: {
         type: String,
         required: true
     },
     created: {
-        type: DateTime,
+        type: Date,
         required: true
     },
-    roleId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: Role
-    },
+    // roleId: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: Role
+    // },
     updated: {
-        type: DateTime,
-        required: true
+        type: Date,
     }
 });
-const user_model = new mongoose.model('User', user)
+const user_model = new mongoose.model('users', user);
 
-module.exports = user_model
+module.exports = user_model;
