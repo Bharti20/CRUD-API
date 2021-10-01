@@ -2,6 +2,7 @@ const user = require('../models/user')
 const bcrypt = require('bcrypt')
 const Joi = require('joi')
 const jwt = require('jsonwebtoken')
+// const user_auth = require('../middleware/auth')
 
 //signup function
 let singup = async(req, res) => {
@@ -11,6 +12,7 @@ let singup = async(req, res) => {
         email: Joi.string().required(),
         mobile: Joi.number().required(),
         password: Joi.string().required(),
+        roleId: Joi.string().required(),
         created: Joi.date(),
         updated: Joi.date().default(null)
     }); 
@@ -30,11 +32,11 @@ let singup = async(req, res) => {
         email: result.email,
         mobile: result.mobile,
         password: hashPassword,
+        roleId:result.roleId,
         created: new Date(),
         updated: result.updated
     }
-    let checkUser = user.findOne({email: req.body.email})
-    console.log(userDetails)
+    let checkUser = await user.findOne({email: req.body.email})
     if(checkUser) {
         res.send('User is already exist')
     }
@@ -73,12 +75,25 @@ let userLogin = async(req, res) => {
 
 //get all
 let getAllUsers = async(req, res) => {
-    let userDatas = await user.find({})
-    let responseData = {}
-    responseData['status'] = true
-    responseData['content'] = {}
-    responseData['content']['data'] = userDatas
-    res.send(responseData)
+    let token = req.headers.authorization
+    const userVerification = await jwt.verify(token, process.env.SECRET_KEY)
+    let userEmail = userVerification['email']
+    let role = await user.findOne({email: userEmail}).populate('roleId')
+    let scopes = role['roleId']['scopes']
+    let i = 0
+    for(i in scopes) {
+        if(scopes[i] == "user-get") {
+            let userDatas = await user.find({})
+            let responseData = {}
+            responseData['status'] = true
+            responseData['content'] = {}
+            responseData['content']['data'] = userDatas
+            return res.send(responseData)
+        }
+        else{
+            return res.send("You don't have access to get all users")
+        }
+    } 
 };
 
 //get Single 

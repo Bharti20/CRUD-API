@@ -20,17 +20,12 @@ let createRoles = async(req, res) => {
         created: new Date(),
         updated: result.updated
     }
-    let checkUser = await role_model.findOne({name: req.body.name})
-    if(checkUser) {
-        res.send('This role is already exists')
-    }else{
-        let data = await role_model.create(userRole);
-        let mainData = {}
-        mainData['status'] = true
-        mainData['content'] = {}
-        mainData['content']['data'] = data
-        res.send(mainData)
-    };
+    let data = await role_model.create(userRole);
+    let mainData = {}
+    mainData['status'] = true
+    mainData['content'] = {}
+    mainData['content']['data'] = data
+    res.send(mainData)
 };
 //get Roles
 let getRoles = async(req, res) => {
