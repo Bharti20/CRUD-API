@@ -1,7 +1,8 @@
 const school_model = require('../models/school')
 const Joi = require('joi');
 const student_model = require('../models/student');
-
+const jwt = require('jsonwebtoken')
+const user = require('../models/user')
 
 //create schools
 let createSchool = async(req, res) => {
@@ -27,12 +28,37 @@ let createSchool = async(req, res) => {
         created: new Date(),
         updated: result.updated 
     };
-    let dataOfSchool = await school_model.create(schoolData);
-    let obj = {}
-    obj['status'] = true
-    obj['content'] = {}
-    obj['content']['data'] = dataOfSchool
-    res.send(obj);
+    let token = req.headers.authorization
+    const userVerification = await jwt.verify(token, process.env.SECRET_KEY)
+    let userEmail = userVerification['email']
+    let role = await user.findOne({email: userEmail}).populate('roleId')
+    let scopes = role['roleId']['scopes']
+    console.log(scopes)
+    let i = 0
+    while(i<scopes.length) {
+        if(scopes[i] == "school-create") {
+            break;
+        }
+        i++  
+    }
+    if(scopes[i] == "school-create"){
+        let dataOfSchool = await school_model.create(schoolData);
+        let obj = {}
+        obj['status'] = true
+        obj['content'] = {}
+        obj['content']['data'] = dataOfSchool
+        return res.send(obj);
+    }
+    else{
+        return res.send("You don't have access to create school")
+    };
+
+    // let dataOfSchool = await school_model.create(schoolData);
+    // let obj = {}
+    // obj['status'] = true
+    // obj['content'] = {}
+    // obj['content']['data'] = dataOfSchool
+    // res.send(obj);
 };
 
 

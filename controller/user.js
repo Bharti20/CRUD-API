@@ -81,29 +81,49 @@ let getAllUsers = async(req, res) => {
     let role = await user.findOne({email: userEmail}).populate('roleId')
     let scopes = role['roleId']['scopes']
     let i = 0
-    for(i in scopes) {
+    while(i<scopes.length) {
         if(scopes[i] == "user-get") {
-            let userDatas = await user.find({})
-            let responseData = {}
-            responseData['status'] = true
-            responseData['content'] = {}
-            responseData['content']['data'] = userDatas
-            return res.send(responseData)
-        }
-        else{
-            return res.send("You don't have access to get all users")
-        }
+            break;
+        }i++
     } 
+    if(scopes[i] == "user-get") {
+        let userDatas = await user.find({})
+        let responseData = {}
+        responseData['status'] = true
+        responseData['content'] = {}
+        responseData['content']['data'] = userDatas
+        return res.send(responseData)
+    }
+    else{
+        return res.send("You don't have access to get all users")
+    }
 };
+
 
 //get Single 
 let getSingleUser = async(req, res) => {
-    let singleUserData = await user.findOne({id:req.params.id})
-    let userData = {}
-    userData['status'] = true
-    userData['content'] = {}
-    userData['content']['data'] = singleUserData
-    res.send(userData)
+    let token = req.headers.authorization
+    const userVerification = await jwt.verify(token, process.env.SECRET_KEY)
+    let userEmail = userVerification['email']
+    let role = await user.findOne({email: userEmail}).populate('roleId')
+    let scopes = role['roleId']['scopes']
+    let i = 0
+    while(i<scopes.length) {
+        if(scopes[i] == "user-get") {
+            break;
+        }i++
+    }
+    if(scopes[i] == "user-get") {
+        let userDatas = await user.findOne({_id:req.params.id})
+        let responseData = {}
+        responseData['status'] = true
+        responseData['content'] = {}
+        responseData['content']['data'] = userDatas
+        return res.send(responseData)
+    }
+    else{
+        return res.send("You don't have access to get all users")
+    };
 };
 
 module.exports = {
