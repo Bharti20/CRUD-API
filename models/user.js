@@ -25,10 +25,10 @@ const user = mongoose.Schema({
         type: Date,
         required: true
     },
-    // roleId: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: Role
-    // },
+    roleId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "roles"
+    },
     updated: {
         type: Date,
     }

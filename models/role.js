@@ -14,10 +14,9 @@ const role_schema = mongoose.Schema({
     },
     updated: {
         type: Date,
-        required: true
     }
 
 });
 
-const role_model = new mongoose.model('Roles', role_schema);
+const role_model = new mongoose.model('roles', role_schema);
 module.exports = role_model;

@@ -22,8 +22,7 @@ const school_schema = mongoose.Schema({
     },
     updated: {
         type: Date,
-        required: true
     }
 });
-const school_model = new mongoose.model('School', school_schema);
+const school_model = new mongoose.model('schools', school_schema);
 module.exports = school_model;

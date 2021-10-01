@@ -71,10 +71,31 @@ let userLogin = async(req, res) => {
     
 };
 
+//get all
+let getAllUsers = async(req, res) => {
+    let userDatas = await user.find({})
+    let responseData = {}
+    responseData['status'] = true
+    responseData['content'] = {}
+    responseData['content']['data'] = userDatas
+    res.send(responseData)
+};
+
+//get Single 
+let getSingleUser = async(req, res) => {
+    let singleUserData = await user.findOne({id:req.params.id})
+    let userData = {}
+    userData['status'] = true
+    userData['content'] = {}
+    userData['content']['data'] = singleUserData
+    res.send(userData)
+};
 
 module.exports = {
     singup,
-    userLogin
+    userLogin,
+    getAllUsers,
+    getSingleUser
 }
 
 
