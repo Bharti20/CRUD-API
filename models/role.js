@@ -1,4 +1,4 @@
-const mongoose = require('../dbconnection/connection')
+const mongoose = require('../dbconnection/connection');
 const role_schema = mongoose.Schema({
     name: {
         type: String,

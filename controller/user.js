@@ -1,8 +1,7 @@
-const user = require('../models/user')
-const bcrypt = require('bcrypt')
-const Joi = require('joi')
-const jwt = require('jsonwebtoken')
-// const user_auth = require('../middleware/auth')
+const user = require('../models/user');
+const bcrypt = require('bcrypt');
+const Joi = require('joi');
+const jwt = require('jsonwebtoken');
 
 //signup function
 let singup = async(req, res) => {
@@ -22,7 +21,6 @@ let singup = async(req, res) => {
     }else {
         result = result.value;
     };
-
     const salt = 10;
     const password = req.body.password
     let hashPassword = await bcrypt.hash(password, salt)
@@ -36,17 +34,15 @@ let singup = async(req, res) => {
         created: new Date(),
         updated: result.updated
     }
-    let checkUser = await user.findOne({email: req.body.email})
+    let checkUser = await user.findOne({email: req.body.email});
     if(checkUser) {
-        res.send('User is already exist')
+        res.send('User is already exist');
     }
     else {
-        let createData = await user.create(userDetails)
-        res.send(userDetails)
+        let createData = await user.create(userDetails);
+        res.send(userDetails);
     };
-
 };
-
 
 //login 
 let userLogin = async(req, res) => {
@@ -69,8 +65,7 @@ let userLogin = async(req, res) => {
         }else{
             res.json({success: false, message: 'passwords do not match'});
         };
-    });
-    
+    });  
 };
 
 //get all
@@ -87,26 +82,25 @@ let getAllUsers = async(req, res) => {
         }i++
     } 
     if(scopes[i] == "user-get") {
-        let userDatas = await user.find({})
-        let responseData = {}
-        responseData['status'] = true
-        responseData['content'] = {}
-        responseData['content']['data'] = userDatas
-        return res.send(responseData)
+        let userDatas = await user.find({});
+        let responseData = {};
+        responseData['status'] = true;
+        responseData['content'] = {};
+        responseData['content']['data'] = userDatas;
+        return res.send(responseData);
     }
     else{
-        return res.send("You don't have access to get all users")
+        return res.send("You don't have access to get all users");
     }
 };
 
-
 //get Single 
 let getSingleUser = async(req, res) => {
-    let token = req.headers.authorization
-    const userVerification = await jwt.verify(token, process.env.SECRET_KEY)
-    let userEmail = userVerification['email']
-    let role = await user.findOne({email: userEmail}).populate('roleId')
-    let scopes = role['roleId']['scopes']
+    let token = req.headers.authorization;
+    const userVerification = await jwt.verify(token, process.env.SECRET_KEY);
+    let userEmail = userVerification['email'];
+    let role = await user.findOne({email: userEmail}).populate('roleId');
+    let scopes = role['roleId']['scopes'];
     let i = 0
     while(i<scopes.length) {
         if(scopes[i] == "user-get") {
@@ -114,15 +108,15 @@ let getSingleUser = async(req, res) => {
         }i++
     }
     if(scopes[i] == "user-get") {
-        let userDatas = await user.findOne({_id:req.params.id})
-        let responseData = {}
-        responseData['status'] = true
-        responseData['content'] = {}
-        responseData['content']['data'] = userDatas
-        return res.send(responseData)
+        let userDatas = await user.findOne({_id:req.params.id});
+        let responseData = {};
+        responseData['status'] = true;
+        responseData['content'] = {};
+        responseData['content']['data'] = userDatas;
+        return res.send(responseData);
     }
     else{
-        return res.send("You don't have access to get all users")
+        return res.send("You don't have access to get all users");
     };
 };
 
@@ -131,6 +125,6 @@ module.exports = {
     userLogin,
     getAllUsers,
     getSingleUser
-}
+};
 
 

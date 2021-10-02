@@ -1,4 +1,4 @@
-const mongoose = require('../dbconnection/connection')
+const mongoose = require('../dbconnection/connection');
 
 const user = mongoose.Schema({
     first_name: {
